@@ -1,4 +1,5 @@
 <template>
+
   <div class="wrapper">
     <aside class="aside"></aside>
     <div class="app">
@@ -23,7 +24,7 @@
         </button>
       </div>
       <main class="table">
-        <TableTop :headers="headers"></TableTop>
+        <TableTop :headers="headers" :items="items"></TableTop>
         <div class="table-main">
           <TableHeader v-bind:headers="headers"></TableHeader>
           <TableRows :headers="headers" :items="items"></TableRows>

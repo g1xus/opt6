@@ -24,16 +24,13 @@
         <div class="table-row__name" v-else-if="header.id==3">
           <div class="table-row__selected" @click="item.isOptionsActive=!item.isOptionsActive">{{`${item.name}  ${item.title}`}}</div>
           <div class="table-row__options table__modal" v-if="item.isOptionsActive == true">
-            <div class="table-row__option" v-for="titleOption in item.titleOptions" @click="item.title = titleOption, item.isOptionsActive = false">
+            <div class="table-row__option" v-for="titleOption in item.titleOptions" @click="changeItemTitle(item, titleOption)">
               <b>{{ item.name }}</b> {{titleOption}}
             </div>
-
-
           </div>
         </div>
-        <textarea class="table-row__input" rows="1" v-else
-                  v-model="item[header.name]">
-          </textarea>
+        <input class="table-row__input" v-else
+                  v-model="item[header.name]" @focusout="changeIsSavableData()">
       </div>
     </div>
     <div class="table-row__placeholder" v-if="item.isBottomPlaceholder"></div>
@@ -44,11 +41,19 @@ import {ref} from 'vue'
 
 export default {
   props: ['headers', 'items'],
-  setup(props) {
+  setup(props, {emit}) {
     let items = ref(props.items)
     let itemProductId
     let probablyDrop = ref(0)
     let dragging
+    function changeIsSavableData() {
+      emit('changeIsSavableData', true)
+    }
+    function changeItemTitle(item, titleOption) {
+      item.title = titleOption
+      item.isOptionsActive = false
+      changeIsSavableData()
+    }
 
     function getCoords(elem) {   // кроме IE8-
       let box = elem.getBoundingClientRect();
@@ -129,6 +134,8 @@ export default {
       items.value.map(function (item, i) {
         item.productId = i + 1
       })
+
+      //Можно вставить запрос на удаление объекта с БД
     }
 
     return {
@@ -137,7 +144,9 @@ export default {
       probablyDrop,
       changeProbablyDrop,
       itemProductId,
-      deleteProduct
+      deleteProduct,
+      changeItemTitle,
+      changeIsSavableData
     }
   }
 }
@@ -145,6 +154,7 @@ export default {
 
 <style lang="sass">
 .table
+
   &-row
     width: 100%
 
@@ -196,10 +206,6 @@ export default {
       position: relative
       &::-webkit-scrollbar
         width: 0
-
-      &:focus
-        white-space: break-spaces
-
       &:focus
         outline: none
     &__name

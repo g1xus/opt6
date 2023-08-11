@@ -1,5 +1,6 @@
 <template>
-  <div class="table-top">
+  <div class="table-top" id="tableTop">
+    <div class="table-top__save" @click="saveData">Сохранить изменения</div>
     <img src="@/assets/settings.svg" alt="Настройки"
          @click="settingsActiveStage == 0 ? settingsActiveStage = 1 : settingsActiveStage = 0">
     <div class="table-top__settings table__modal"
@@ -24,13 +25,18 @@
 <script>
 import {ref} from 'vue'
 export default {
-  props: ['headers'],
+  props: ['headers', 'items'],
   setup(props) {
     const headers = props.headers
     let settingsActiveStage = ref(0)
-
+    function saveData() {
+      console.log('save' )
+      props.items.forEach((item) => {
+        console.log(item)
+      })
+    }
     return {
-      settingsActiveStage, headers
+      settingsActiveStage, headers, saveData
     }
   }
 }
@@ -94,5 +100,9 @@ export default {
         background-size: 6px 7px
         background-position: center
         background-repeat: no-repeat
-
+  &__save
+    font-size: 12px
+    color: #a6b7d4
+    margin-right: 10px
+    cursor: pointer
 </style>

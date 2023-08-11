@@ -6,12 +6,20 @@
           {{ header.title }}
         </div>
         <div v-if="header.id == 2">
-          <img src="@/assets/options.svg" alt="Действие" @click="item.isOptionsActive=!item.isOptionsActive">
+          <img src="@/assets/options.svg" alt="Действие" @click="item.isActionsActive=!item.isActionsActive">
           <div class="table-row__option table__modal"
-               v-if="item.isOptionsActive == true"
+               v-if="item.isActionsActive == true"
                @click="deleteProduct(item)"
           >
             Удалить</div>
+        </div>
+        <div class="table-row__name" v-else-if="header.id==3">
+          <div class="table-row__selected" @click="item.isOptionsActive=!item.isOptionsActive">{{`${item.name}  ${item.title}`}}</div>
+          <div class="table-row__options table__modal" v-if="item.isOptionsActive == true">
+            <div class="table-row__option" v-for="titleOption in item.titleOptions" @click="item.title = titleOption, item.isActionsActive = false">
+              <b>{{ item.name }}</b> {{titleOption}}
+            </div>
+          </div>
         </div>
         <input v-model="item[header.name]" v-else class="products-el__value">
       </div>
@@ -29,7 +37,7 @@ export default {
   setup(props) {
     let items = ref(props.items)
     function deleteProduct(item) {
-      item.isOptionsActive = false
+      item.isActionsActive = false
       items.value.splice(item.productId - 1, 1)
       items.value.map(function (item, i) {
         item.productId = i + 1
